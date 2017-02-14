@@ -1,30 +1,39 @@
 var express = require('express');
 var router = express.Router();
 var request = require('request');
+var config = require('../config');
 
-router.get('/', function(req, res){
-
-  var url = 'https://www.quandl.com/api/v3/datasets/OPEC/ORB.json?api_key=WMegHUsnhh8okQvZqftE';
-  request(url, function(err, response, body){
-    
-    if (!err && response.statusCode == 200) {
-      console.log(body);
-      var info = JSON.parse(body)
-        res.send(info);
-    }
-  })
+router.get('/', function(req, res) {
+    console.log('get');
+    var url = 'FB';
+    getStocks(url).then(function(response, error) {
+        res.render('index', {
+            response: response
+        });
+    }).catch(function(error) {
+        console.log(error)
+    });
 })
 
-function getStocks(){
-  var url = 'https://www.quandl.com/api/v3/datasets/OPEC/ORB.json?api_key=WMegHUsnhh8okQvZqftE';
-  request(url, function(err, res, body){
-    if (!err && res.statusCode == 200) {
-      var info = JSON.parse(body)
-      return info;
-    }
-  })
 
+router.post('/', function(req, res) {
 
+})
+
+function getStocks(stockCode) {
+    var apiKey = config.getQuandlAPIKey();
+    var requestURL = `https://www.quandl.com/api/v3/datasets/WIKI/${stockCode}.json?column_index=4&start_date=2014-01-01&end_date=2014-12-31&collapse=daily&transform=diff&api_key=${apiKey}`
+    return new Promise(function(resolve, reject) {
+        request(requestURL, function(err, res, body) {
+            console.log(res.statusCode);
+            if (err) {
+                reject(err);
+            } else if (!err && res.statusCode == 200) {
+                var info = JSON.parse(body)
+                resolve(info);
+            }
+        })
+    });
 }
 
 

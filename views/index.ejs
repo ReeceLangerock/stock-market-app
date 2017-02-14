@@ -1,1 +1,36 @@
-index
+<!DOCTYPE html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Stock Visualizer</title>
+    <link rel="stylesheet" type='text/css' href='./style.css'>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+
+</head>
+
+
+<body>
+    <h1>Stocks</h1>
+    <button onclick="test()">click me</button>
+      <div id = 'messages'></div>
+
+      <script>
+          var socket = io();
+
+          function test() {
+              console.log('test')
+              socket.emit('chat message', "clicked");
+
+              return false;
+
+          }
+          socket.on('chat message', function(msg) {
+              $('#messages').append($('<li>').text(msg));
+          });
+      </script>
+</body>
+
+</html>
