@@ -1,0 +1,19 @@
+{
+  "name": "stock-market-app",
+  "version": "1.0.0",
+  "description": "stock viewer app for FCC backend Cert",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ReeceLangerock/stock-market-app.git"
+  },
+  "author": "Reece Langerock",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ReeceLangerock/stock-market-app/issues"
+  },
+  "homepage": "https://github.com/ReeceLangerock/stock-market-app#readme"
+}
