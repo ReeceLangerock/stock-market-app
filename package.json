@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/ReeceLangerock/stock-market-app/issues"
   },
-  "homepage": "https://github.com/ReeceLangerock/stock-market-app#readme"
+  "homepage": "https://github.com/ReeceLangerock/stock-market-app#readme",
+  "dependencies": {
+    "chart.js": "^2.5.0"
+  }
 }

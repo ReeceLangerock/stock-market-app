@@ -8,29 +8,43 @@
     <link rel="stylesheet" type='text/css' href='./style.css'>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
+    <script src="./stockChart.js"></script>
+
 
 </head>
 
 
 <body>
     <h1>Stocks</h1>
-    <button onclick="test()">click me</button>
-      <div id = 'messages'></div>
+    <div class='chartContainer' style="width: 500px; height: 500px;">
+        <canvas id="stock-chart" width="500px" height="500px"></canvas>
+    </div>
+    <div>
 
-      <script>
-          var socket = io();
+    <button onclick="updateChart()">click me</button>
+    <input type ='text' id = 'stockCode'>
 
-          function test() {
-              console.log('test')
-              socket.emit('chat message', "clicked");
+  </div>
+    <div id='messages'></div>
+    <script>
+      
+    </script>
+    <script>
+        var socket = io();
 
-              return false;
+        function test() {
+            console.log('test')
+            socket.emit('chat message', "clicked");
 
-          }
-          socket.on('chat message', function(msg) {
-              $('#messages').append($('<li>').text(msg));
-          });
-      </script>
+            return false;
+
+        }
+        socket.on('chat message', function(msg) {
+            $('#messages').append($('<li>').text(msg));
+        });
+    </script>
+
 </body>
 
 </html>
