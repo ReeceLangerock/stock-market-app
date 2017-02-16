@@ -3,6 +3,18 @@ var express = require('express');
 var app = express();
 var path = require('path');
 var port = process.env.PORT || 3000;
+var config = require('./config');
+var mongoose = require('mongoose');
+
+//MONGOOSE CONFIG
+mongoose.connect('mongodb://'+config.getMongoUser()+':'+config.getMongoPass()+'@ds153669.mlab.com:53669/stocks-srl');
+//below mongoose.connect saved for when moving to heroku
+//mongoose.connect(`mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@ds145669.mlab.com:45669/nightlife`);
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection eror:'));
+db.once('open', function(){
+  console.log("db connected");
+})
 
 // SOCKET SETUP
 var server = require('http').createServer(app);
@@ -20,23 +32,11 @@ app.use(function(err, req, res, next) {
 });
 
 
-// SOCKET SETUP
-  io.on('connection', function(socket){
-    socket.on('chat message', function(msg){
-      io.emit('chat message', msg);
-    });
-  });
-
 // ROUTES
-app.use('/', require('./controllers/index'));
+app.use('/', require('./controllers/index')(io));
 
 // LAUNCH
-io.on('connection', function(socket) {
-    console.log('a user connected');
-    socket.on('disconnect', function(){
-    console.log('user disconnected');
-  });
-});
+
 server.listen(port, function(){
-  console.log('connected');
+  console.log('server connected');
 })

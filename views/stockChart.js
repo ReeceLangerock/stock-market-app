@@ -1,15 +1,10 @@
+let stockChart;
 
 function updateChart() {
     var stockCode = document.getElementById('stockCode').value;
-    console.log(stockCode);
+
     sendPostForStockData(stockCode).then(function(response, error) {
-        var labels = [];
-        var prices = [];
-        for (let i = response.length-1; i > 0; i--) {
-            labels.push(response[i][0]);
-            prices.push(response[i][1]);
-        }
-        drawChart(labels,prices);
+
     })
 
 }
@@ -36,28 +31,37 @@ function sendPostForStockData(stockCode) {
     })
 }
 
-function drawChart(labels, prices) {
+function redrawChart(response) {
+    var labels = [];
+    var prices = [];
+    console.log(response);
+    for (let i = 0; i < response.dataset.data.length; i++) {
+
+        labels.push(response.dataset.data[i][0]);
+        prices.push(response.dataset.data[i][1]);
+    }
+
+    console.log(stockChart.data)
+    stockChart.data.labels = labels;
+    stockChart.data.datasets.push({
+        label: response.dataset.dataset_code,  
+        data: prices
+    })
+    stockChart.update();
+}
+
+function drawChart(labels, data) {
 
     var ctx = document.getElementById("stock-chart");
-    var myChart = new Chart(ctx, {
+    stockChart = new Chart(ctx, {
         type: 'line',
         responsive: true,
         maintainAspectRatio: false,
         data: {
-            labels: labels,
+            labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
             datasets: [{
-                data: prices,
-                borderWidth: 1
+                data: [12, 19, 3, 5, 2, 3]
             }]
         },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
-        }
     });
 }

@@ -22,26 +22,21 @@
     </div>
     <div>
 
-    <button onclick="updateChart()">click me</button>
-    <input type ='text' id = 'stockCode'>
+        <button onclick="updateChart()">click me</button>
+        <input type='text' id='stockCode'>
 
-  </div>
+    </div>
     <div id='messages'></div>
     <script>
-      
     </script>
     <script>
+        drawChart();
         var socket = io();
 
-        function test() {
-            console.log('test')
-            socket.emit('chat message', "clicked");
-
-            return false;
-
-        }
-        socket.on('chat message', function(msg) {
-            $('#messages').append($('<li>').text(msg));
+        socket.on('add stock', function(stockData) {
+            
+            redrawChart(stockData);
+            //$('#messages').append($('<li>').text('test'));
         });
     </script>
 
