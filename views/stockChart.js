@@ -1,7 +1,7 @@
 let stockChart;
 
 function updateChart() {
-    var stockCode = document.getElementById('stockCode').value;
+    var stockCode = document.getElementById('addStock').value;
     sendPostForStockData(stockCode).then(function(response, error) {
 
     })

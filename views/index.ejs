@@ -16,9 +16,9 @@
 
 
 <body>
-  
-    <div class='chartContainer' style="width: 500px; height: 500px;">
-        <canvas id="stock-chart" width="500px" height="500px"></canvas>
+  <div class = 'container'>
+    <div class='chartContainer' >
+        <canvas id="stock-chart" width="1000px" height="500px"></canvas>
     </div>
 
     <div class='stockItemContainer' id='stockContainer'>
@@ -34,11 +34,16 @@
             <% } %>
                 <div class="stockItem addStockItem">
                     <h3>Syncs in real-time across clients</h3>
-                    <input type='text' value = 'Stock Code' id='stockCode'>
+                    <input type='text' value = 'Stock Code' id='addStock' onFocus="clearInput()">
                     <button onclick="updateChart()">Add</button>
                 </div>
     </div>
+  </div>
     <script>
+        function clearInput(){
+          $('#addStock').val('');
+        }
+
         var dataset = <%-JSON.stringify(dataset) %>
         var labels = <%-JSON.stringify(labels) %>
         drawChart(labels, dataset);
@@ -52,6 +57,7 @@
             $('#stockContainer').append($(`<div id = '${stockCode}Div' class = 'stockItem'><h1>${stockCode}</h1>
             <button id = ${stockCode} onclick = 'removeStock(${stockCode})'>X</button>
             <p>${stockDescription}</p></div>`));
+            clearInput();
         });
 
         socket.on('remove stock', function(stockData) {

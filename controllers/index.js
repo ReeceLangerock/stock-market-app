@@ -77,10 +77,12 @@ var returnRouter = function(io) {
                 getStock(req.body.stockCode).then(function(response, error) {
                     if (response == '404') {
                         res.send('404');
+                        res.end();
                     } else {
                         stockModel.schema.methods.newStock(response.dataset.id, response.dataset.dataset_code);
                         io.sockets.emit('add stock', response);
                         res.send('200');
+                        res.end();
                     }
                 })
             }
@@ -94,10 +96,12 @@ var returnRouter = function(io) {
         removeStock(req.body.stockCode).then(function(response, error){
           if (response == '404') {
               res.send('404');
+              res.end();
           } else {
 
               io.sockets.emit('remove stock', req.body.stockCode);
               res.send('200');
+              res.end();
           }
         });
     })
@@ -153,9 +157,9 @@ var returnRouter = function(io) {
 
         return new Promise(function(resolve, reject) {
             request(requestURL, function(err, res, body) {
-                console.log(res.statusCode);
 
                 if (err) {
+                  console.log(err);
                     reject(err);
                 } else if (!err && res.statusCode == 200) {
                     var info = JSON.parse(body)
