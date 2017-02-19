@@ -16,27 +16,49 @@
 
 
 <body>
-    <h1>Stocks</h1>
+  
     <div class='chartContainer' style="width: 500px; height: 500px;">
         <canvas id="stock-chart" width="500px" height="500px"></canvas>
     </div>
-    <div>
 
-        <button onclick="updateChart()">click me</button>
-        <input type='text' id='stockCode'>
+    <div class='stockItemContainer' id='stockContainer'>
+        <% for(let numStocks = 0; numStocks < dataset.length; numStocks++) { %>
+            <div class="stockItem" id='<%=dataset[numStocks].label %>Div'>
+                <h1><%=dataset[numStocks].label %></h1>
+                <button id="<%=dataset[numStocks].label %>" name=numStocks onclick=removeStock(<%-dataset[numStocks].label %>)>X</button>
+                <p>
+                    <%=stockDescription[numStocks] %>
+                </p>
 
+            </div>
+            <% } %>
+                <div class="stockItem addStockItem">
+                    <h3>Syncs in real-time across clients</h3>
+                    <input type='text' value = 'Stock Code' id='stockCode'>
+                    <button onclick="updateChart()">Add</button>
+                </div>
     </div>
-    <div id='messages'></div>
     <script>
-    </script>
-    <script>
-        drawChart();
-        var socket = io();
+        var dataset = <%-JSON.stringify(dataset) %>
+        var labels = <%-JSON.stringify(labels) %>
+        drawChart(labels, dataset);
 
+        var socket = io();
         socket.on('add stock', function(stockData) {
-            
             redrawChart(stockData);
-            //$('#messages').append($('<li>').text('test'));
+            console.log(stockData);
+            var stockCode = stockData.dataset.dataset_code;
+            var stockDescription = stockData.dataset.name;
+            $('#stockContainer').append($(`<div id = '${stockCode}Div' class = 'stockItem'><h1>${stockCode}</h1>
+            <button id = ${stockCode} onclick = 'removeStock(${stockCode})'>X</button>
+            <p>${stockDescription}</p></div>`));
+        });
+
+        socket.on('remove stock', function(stockData) {
+            console.log('stockData in emit');
+            console.log(stockData);
+            removeFromChart(stockData);
+            $(`#${stockData}Div`).remove();
         });
     </script>
 

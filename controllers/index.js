@@ -13,56 +13,120 @@ var returnRouter = function(io) {
     }));
     router.use(bodyParser.json());
 
+    io.on('connection', function(socket) {
+        console.log('a user connected');
+        socket.on('disconnect', function() {
+            console.log('user disconnected');
+        });
+    });
+
     router.get('/', function(req, res) {
+        var promiseArray = [];
+        queryAllSavedStocks().then(function(response, error) {
+            var stockCodes = [];
+            for (let i = 0; i < response.length; i++) {
+                stockCodes.push(response[i].stockCode);
+            }
+            return stockCodes;
+        }).then(function(response, error) {
+            for (let i = 0; i < response.length; i++) {
+                promiseArray.push(getStock(response[i]));
+            }
 
-        io.on('connection', function(socket) {
-            console.log('a user connected');
-            socket.on('disconnect', function() {
-                console.log('user disconnected');
-            });
+        }).then(function(response, error) {
+            Promise.all(promiseArray).then(function(response, error) {
+                var labels = [];
+                var dataset = [];
+                var description = [];
+                for (let i = response[0].dataset.data.length-1; i > 0; i--) {
+                    labels.push(response[0].dataset.data[i][0])
+                }
+                for (let stockNum = 0; stockNum < response.length; stockNum++) {
+                    var tempData = [];
+                    for (let i = 0; i < response[stockNum].dataset.data.length; i++) {
+                        tempData.push(response[stockNum].dataset.data[i][1]);
+                    }
+                    dataset.push({
+                      fill:false,
+                      borderColor: generateRandomColor(),
+                        label: response[stockNum].dataset.dataset_code,
+                        data: tempData
+                    });
+                    description.push(response[stockNum].dataset.name)
+                }
+
+                res.render('index', {
+                    dataset: dataset,
+                    labels: labels,
+                    stockDescription: description
+                });
+
+            })
         });
 
-        var url = 'FB';
-        getStocks(url).then(function(response, error) {
-            res.render('index', {
-                data: response
-            });
-        }).catch(function(error) {
-            console.log(error)
-        });
     })
 
 
     router.post('/addStockCode', function(req, res) {
-        queryCurrentStocks(req.body.stockCode).then(function(response, error) {
+        querySubmittedStock(req.body.stockCode).then(function(response, error) {
             if (response == 'FOUND') {
                 return 'duplicate';
                 res.send('duplicate')
                 res.end();
             } else {
-
-                getStocks(req.body.stockCode).then(function(response, error) {
+                getStock(req.body.stockCode).then(function(response, error) {
                     if (response == '404') {
                         res.send('404');
                     } else {
-
                         stockModel.schema.methods.newStock(response.dataset.id, response.dataset.dataset_code);
                         io.sockets.emit('add stock', response);
-                        //res.send(response);
+                        res.send('200');
+                    }
+                })
+            }
+        }).catch(function(error) {
+            console.log(error)
+        });
+    })
+
+    router.post('/removeStockCode', function(req, res) {
+
+        removeStock(req.body.stockCode).then(function(response, error){
+          if (response == '404') {
+              res.send('404');
+          } else {
+
+              io.sockets.emit('remove stock', req.body.stockCode);
+              res.send('200');
+          }
+        });
+    })
+
+    function queryAllSavedStocks() {
+
+        return new Promise(function(resolve, reject) {
+            stockModel.find(
+                function(err, docs) {
+                    if (err) {
+                        throw err
+                    } else {
+                        resolve(docs);
                     }
 
                 })
-
-            }
-        }).catch(function(error) {
-
-            console.log(error)
         });
+    }
 
+    function generateRandomColor(){
+      var letters = '0123456789ABCDEF';
+      var hex = '#';
+      for (var i = 0; i < 6; i++) {
+          hex += letters[Math.floor(Math.random() * 16)];
+      }
+      return hex;
+    }
 
-    })
-
-    function queryCurrentStocks(code) {
+    function querySubmittedStock(code) {
         code = code.toUpperCase();
         return new Promise(function(resolve, reject) {
             stockModel.findOne({
@@ -83,7 +147,7 @@ var returnRouter = function(io) {
 
     }
 
-    function getStocks(stockCode) {
+    function getStock(stockCode) {
         var apiKey = config.getQuandlAPIKey();
         var requestURL = `https://www.quandl.com/api/v3/datasets/WIKI/${stockCode}.json?column_index=4&start_date=2014-01-01&end_date=2014-12-31&collapse=daily&api_key=${apiKey}`
 
@@ -102,6 +166,29 @@ var returnRouter = function(io) {
             })
         });
     }
+
+    function removeStock(stockCode) {
+      console.log('in remove\nstockcode:');
+      console.log(stockCode);
+      return new Promise(function(resolve, reject) {
+        stockModel.findOneAndRemove({
+                'stockCode': stockCode
+            },
+            function(err, docs) {
+              console.log('in func:');
+                if (err) {
+                    console.log('error');
+                    reject(err);
+                } else if (docs) {
+                    console.log('REMOVED');
+                    resolve('REMOVED')
+                } else {
+                  console.log('NOT REMOVED');
+                    resolve('NOT_REMOVED');
+                }
+            });
+    });
+  }
     return router;
 }
 

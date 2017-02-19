@@ -1,0 +1,14 @@
+.stockItemContainer{
+  display:flex;
+  flex-wrap: wrap;
+}
+
+.stockItem{
+  flex: 1 0;
+  border: 1px solid;
+  margin:20px;
+}
+
+.addStockItem{
+  order:10;
+}

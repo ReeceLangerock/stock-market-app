@@ -2,10 +2,29 @@ let stockChart;
 
 function updateChart() {
     var stockCode = document.getElementById('stockCode').value;
-
     sendPostForStockData(stockCode).then(function(response, error) {
 
     })
+}
+
+function removeStock(stockToRemove) {
+    console.log(stockToRemove);
+    var xhr = new XMLHttpRequest();
+    var url = "/removeStockCode";
+    //Send the proper header information along with the request
+
+    xhr.onreadystatechange = function() { //Call a function when the state changes.
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            console.log('removed');
+        } else if (xhr.status == '404') {
+            console.log('404');
+        }
+    }
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-type", "application/json");
+    xhr.send(JSON.stringify({
+        'stockCode': stockToRemove.id
+    }));
 
 }
 
@@ -34,23 +53,45 @@ function sendPostForStockData(stockCode) {
 function redrawChart(response) {
     var labels = [];
     var prices = [];
-    console.log(response);
-    for (let i = 0; i < response.dataset.data.length; i++) {
-
+    for (let i = response.dataset.data.length - 1; i > 0; i--) {
         labels.push(response.dataset.data[i][0]);
+    }
+    for (let i = 0; i < response.dataset.data.length; i++) {
         prices.push(response.dataset.data[i][1]);
     }
 
-    console.log(stockChart.data)
     stockChart.data.labels = labels;
     stockChart.data.datasets.push({
-        label: response.dataset.dataset_code,  
+        fill:false,
+        borderColor: generateRandomColor(),
+        label: response.dataset.dataset_code,
         data: prices
     })
     stockChart.update();
 }
 
-function drawChart(labels, data) {
+function removeFromChart(stockToRemove) {
+    console.log(stockToRemove);
+    var index;
+    for (let i = 0; i < stockChart.data.datasets.length; i++) {
+        if (stockChart.data.datasets[i].label == stockToRemove) {
+            index = i;
+        }
+    }
+    stockChart.data.datasets.splice(index, 1);
+    stockChart.update();
+}
+
+function generateRandomColor(){
+  var letters = '0123456789ABCDEF';
+  var hex = '#';
+  for (var i = 0; i < 6; i++) {
+      hex += letters[Math.floor(Math.random() * 16)];
+  }
+  return hex;
+}
+
+function drawChart(labels, dataset) {
 
     var ctx = document.getElementById("stock-chart");
     stockChart = new Chart(ctx, {
@@ -58,10 +99,34 @@ function drawChart(labels, data) {
         responsive: true,
         maintainAspectRatio: false,
         data: {
-            labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-            datasets: [{
-                data: [12, 19, 3, 5, 2, 3]
-            }]
+            labels: labels,
+            datasets: dataset
         },
+        options: {
+            title: {
+                display: true,
+                text: 'Stocks'
+            },
+            scales: {
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Stock Price'
+                    },
+                    // callback solution taken from:
+                    // http://stackoverflow.com/questions/28523394/charts-js-formatting-y-axis-with-both-currency-and-thousands-separator
+                    ticks: {
+                        callback: function(value, index, values) {
+                            if (parseInt(value) >= 1000) {
+                                return '$' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            } else {
+                                return '$' + value;
+                            }
+                        }
+                    }
+                }]
+
+            }
+        }
     });
 }
