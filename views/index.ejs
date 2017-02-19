@@ -8,6 +8,7 @@
     <link rel="stylesheet" type='text/css' href='./style.css'>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
     <script src="./stockChart.js"></script>
 
@@ -16,32 +17,39 @@
 
 
 <body>
-  <div class = 'container'>
-    <div class='chartContainer' >
-        <canvas id="stock-chart" width="1000px" height="500px"></canvas>
-    </div>
+    <div class='container'>
+        <div class='chartContainer'>
+            <canvas id="stock-chart" width="1000px" height="500px"></canvas>
+        </div>
 
-    <div class='stockItemContainer' id='stockContainer'>
-        <% for(let numStocks = 0; numStocks < dataset.length; numStocks++) { %>
-            <div class="stockItem" id='<%=dataset[numStocks].label %>Div'>
-                <h1><%=dataset[numStocks].label %></h1>
-                <button id="<%=dataset[numStocks].label %>" name=numStocks onclick=removeStock(<%-dataset[numStocks].label %>)>X</button>
-                <p>
-                    <%=stockDescription[numStocks] %>
-                </p>
+        <div class='stockItemContainer' id='stockContainer'>
+            <% for(let numStocks = 0; numStocks < dataset.length; numStocks++) { %>
+                <div class="stockItem" id='<%=dataset[numStocks].label %>Div'>
+                    <span class = 'stockSpan'><%=dataset[numStocks].label %>
+                    <button id="<%=dataset[numStocks].label %>" name=numStocks onclick=removeStock(<%-dataset[numStocks].label %>)>X</button></span>
+                    <p>
+                        <%=stockDescription[numStocks] %>
+                    </p>
 
-            </div>
-            <% } %>
-                <div class="stockItem addStockItem">
-                    <h3>Syncs in real-time across clients</h3>
-                    <input type='text' value = 'Stock Code' id='addStock' onFocus="clearInput()">
-                    <button onclick="updateChart()">Add</button>
                 </div>
+                <% } %>
+                    <div class="stockItem addStockItem">
+                        <span class = 'addSpan'>Syncs in real-time across clients</span><br>
+                        <span class = 'inputSpan'><input type='text' value='Stock Code' id='addStock' onFocus="clearInput()">
+                        <button onclick="updateChart()">Add</button>
+                        <p id = 'duplicateDisplay'></p>
+                    </div>
+        </div>
     </div>
-  </div>
+    <!--FOOTER -->
+    <footer>
+        <p>Nightlife Coordination App built by <a href="https://www.freecodecamp.com/reecelangerock" target='_blank'><b>Reece Langerock</b></a></p>
+        <p>This is a FCC Project fulfilling the user stories listed <a href="https://www.freecodecamp.com/challenges/build-a-nightlife-coordination-app" target='_blank'><b>here</b></a></p>
+        <p>Check out the Github Repo <a href="https://github.com/ReeceLangerock/nightlife-app" target='_blank'><b>here</b></a></p>
+    </footer>
     <script>
-        function clearInput(){
-          $('#addStock').val('');
+        function clearInput() {
+            $('#addStock').val('');
         }
 
         var dataset = <%-JSON.stringify(dataset) %>
@@ -51,11 +59,11 @@
         var socket = io();
         socket.on('add stock', function(stockData) {
             redrawChart(stockData);
-            console.log(stockData);
             var stockCode = stockData.dataset.dataset_code;
             var stockDescription = stockData.dataset.name;
-            $('#stockContainer').append($(`<div id = '${stockCode}Div' class = 'stockItem'><h1>${stockCode}</h1>
-            <button id = ${stockCode} onclick = 'removeStock(${stockCode})'>X</button>
+            $('#stockContainer').append($(
+                `<div id = '${stockCode}Div' class = 'stockItem'><span class = 'stockSpan'>${stockCode}
+            <button id = ${stockCode} onclick = 'removeStock(${stockCode})'>X</button></span>
             <p>${stockDescription}</p></div>`));
             clearInput();
         });
@@ -66,7 +74,16 @@
             removeFromChart(stockData);
             $(`#${stockData}Div`).remove();
         });
+
+
+        socket.on('wrong stock', function(){
+          clearInput();
+            console.log('wrong');
+          $('#duplicateDisplay').text("Incorrect or non-existent stock code");
+        })
     </script>
+
+
 
 </body>
 

@@ -4,6 +4,16 @@ function updateChart() {
     var stockCode = document.getElementById('addStock').value;
     sendPostForStockData(stockCode).then(function(response, error) {
 
+      if(response == 'duplicate stock'){
+          document.getElementById('duplicateDisplay').innerHTML = "That stock has already been added";
+      }
+      else if(response == 'wrong stock'){
+        document.getElementById('duplicateDisplay').innerHTML = "Incorrect or non-existent stock code";
+      }
+      else{
+        document.getElementById('duplicateDisplay').innerHTML = "";
+      }
+
     })
 }
 
@@ -11,9 +21,8 @@ function removeStock(stockToRemove) {
     console.log(stockToRemove);
     var xhr = new XMLHttpRequest();
     var url = "/removeStockCode";
-    //Send the proper header information along with the request
 
-    xhr.onreadystatechange = function() { //Call a function when the state changes.
+    xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status == 200) {
             console.log('removed');
         } else if (xhr.status == '404') {
@@ -36,7 +45,7 @@ function sendPostForStockData(stockCode) {
 
         xhr.onreadystatechange = function() { //Call a function when the state changes.
             if (xhr.readyState == 4 && xhr.status == 200) {
-                resolve(JSON.parse(xhr.responseText));
+                resolve(xhr.responseText);
             } else if (xhr.status == '404') {
                 return reject('404');
             }
@@ -62,7 +71,9 @@ function redrawChart(response) {
 
     stockChart.data.labels = labels;
     stockChart.data.datasets.push({
-        fill:false,
+        fill: false,
+        pointRadius: 0,
+        pointHitRadius: 50,
         borderColor: generateRandomColor(),
         label: response.dataset.dataset_code,
         data: prices
@@ -71,7 +82,6 @@ function redrawChart(response) {
 }
 
 function removeFromChart(stockToRemove) {
-    console.log(stockToRemove);
     var index;
     for (let i = 0; i < stockChart.data.datasets.length; i++) {
         if (stockChart.data.datasets[i].label == stockToRemove) {
@@ -82,16 +92,20 @@ function removeFromChart(stockToRemove) {
     stockChart.update();
 }
 
-function generateRandomColor(){
-  var letters = '0123456789ABCDEF';
-  var hex = '#';
-  for (var i = 0; i < 6; i++) {
-      hex += letters[Math.floor(Math.random() * 16)];
-  }
-  return hex;
+function generateRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var hex = '#';
+    for (var i = 0; i < 6; i++) {
+        hex += letters[Math.floor(Math.random() * 16)];
+    }
+    return hex;
 }
 
 function drawChart(labels, dataset) {
+    if(labels == '' && dataset == ''){
+      labels = [];
+      dataset = [];
+    }
 
     var ctx = document.getElementById("stock-chart");
     stockChart = new Chart(ctx, {
@@ -104,8 +118,14 @@ function drawChart(labels, dataset) {
         },
         options: {
             title: {
+                fontSize: 30,
                 display: true,
                 text: 'Stocks'
+            },
+            hover: {
+                // Overrides the global setting
+                mode: 'dataset',
+                intersect: false
             },
             scales: {
                 yAxes: [{
@@ -124,9 +144,21 @@ function drawChart(labels, dataset) {
                             }
                         }
                     }
+                }],
+                xAxes: [{
+                  type: 'time',
+              time: {
+                      unit: 'month'
+              },
+                    ticks: {
+
+                        fontSize: 10,
+                    }
+
                 }]
 
             }
         }
     });
+
 }
