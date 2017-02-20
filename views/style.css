@@ -15,7 +15,7 @@ input[type=reset],input[type=submit]{-webkit-appearance:button;cursor:pointer;}b
 canvas {
     width: 100% !important;
     min-width: 100%;
-    height: auto !important;
+    max-height: 600px;
 
 }
 

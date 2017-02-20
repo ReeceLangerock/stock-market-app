@@ -93,21 +93,25 @@ var returnRouter = function(io) {
     router.post('/addStockCode', function(req, res) {
         //first check if stock is already in mongodb
         querySubmittedStock(req.body.stockCode).then(function(response, error) {
-            //if stock found, send 404 and emit
+            //if stock already in mongodb, send 404 and emit
             if (response == 'FOUND') {
 
                 res.send('duplicate stock');
                 res.end();
             } else {
+                // get current date and format for url request
                 var date = new Date();
                 var startDate = date.getFullYear() - 1 + '-' + (date.getMonth() + 1) + '-' + date.getDate();
                 var endDate = (date.getFullYear()) + '-' + (date.getMonth() + 1) + '-' + date.getDate();
                 getStock(req.body.stockCode, startDate, endDate).then(function(response, error) {
+                    // if stock isn't found
                     if (response == '404') {
                         res.send('wrong stock');
                         res.end();
                     } else {
+                        // add stock to mongodb
                         stockModel.schema.methods.newStock(response.dataset.id, response.dataset.dataset_code);
+                        //emit stock to all connected
                         io.sockets.emit('add stock', response);
                         res.send('200');
                         res.end();
@@ -122,11 +126,12 @@ var returnRouter = function(io) {
     router.post('/removeStockCode', function(req, res) {
 
         removeStock(req.body.stockCode).then(function(response, error) {
+            // if stock is found in mongodb, do nothing
             if (response == '404') {
                 res.send('404');
                 res.end();
             } else {
-
+                // else, emit remove stock from connected users
                 io.sockets.emit('remove stock', req.body.stockCode);
                 res.send('200');
                 res.end();
@@ -135,7 +140,6 @@ var returnRouter = function(io) {
     })
 
     function queryAllSavedStocks() {
-
         return new Promise(function(resolve, reject) {
             stockModel.find(
                 function(err, docs) {
@@ -144,11 +148,11 @@ var returnRouter = function(io) {
                     } else {
                         resolve(docs);
                     }
-
                 })
         });
     }
 
+    // generate reandom hex code for stock dataset lines
     function generateRandomColor() {
         var letters = '0123456789ABCDEF';
         var hex = '#';
@@ -158,6 +162,7 @@ var returnRouter = function(io) {
         return hex;
     }
 
+    // search mongodb for a stock code
     function querySubmittedStock(code) {
         code = code.toUpperCase();
         return new Promise(function(resolve, reject) {
@@ -178,12 +183,12 @@ var returnRouter = function(io) {
 
     }
 
+    // query quandl db for a stock code
     function getStock(stockCode, startDate, endDate) {
         var apiKey = process.env.QUANDL_API_KEY;// || config.getQuandlAPIKey();
         var requestURL = `https://www.quandl.com/api/v3/datasets/WIKI/${stockCode}.json?column_index=4&start_date=${startDate}&end_date=${endDate}&collapse=daily&api_key=${apiKey}`
         return new Promise(function(resolve, reject) {
-            request(requestURL, function(err, res, body) {
-                console.log(res.statusCode);
+            request(requestURL, function(err, res, body) {                
                 if (err) {
                     console.log(err);
                     reject(err);
@@ -195,28 +200,23 @@ var returnRouter = function(io) {
                 } else if (res.statusCode == 400) {
                     resolve('400');
                 }
-
             })
         });
     }
 
+    // query mongodb for a stock code, if found then remove it
     function removeStock(stockCode) {
-        console.log('in remove\nstockcode:');
-        console.log(stockCode);
         return new Promise(function(resolve, reject) {
             stockModel.findOneAndRemove({
                     'stockCode': stockCode
                 },
                 function(err, docs) {
-                    console.log('in func:');
                     if (err) {
                         console.log('error');
                         reject(err);
                     } else if (docs) {
-                        console.log('REMOVED');
                         resolve('REMOVED')
                     } else {
-                        console.log('NOT REMOVED');
                         resolve('NOT_REMOVED');
                     }
                 });

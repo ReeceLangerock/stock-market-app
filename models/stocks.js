@@ -1,3 +1,5 @@
+//mongoose schema for simple stock document
+//includes id taken from quandl and stock code
 const mongoose = require('mongoose');
 
 var stockSchema = mongoose.Schema({
