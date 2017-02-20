@@ -8,7 +8,7 @@ var mongoose = require('mongoose');
 
 //MONGOOSE CONFIG
 var userName = process.env.MONGO_USERNAME;// || config.getMongoUser();
-var password = process.env.MONGO_USERNAME;// || config.getMongoPass();
+var password = process.env.MONGO_PASSWORD;// || config.getMongoPass();
 //mongoose.connect('mongodb://'+config.getMongoUser()+':'+config.getMongoPass()+'@ds153669.mlab.com:53669/stocks-srl');
 //below mongoose.connect saved for when moving to heroku
 mongoose.connect(`mongodb://${userName}:${password}@ds145669.mlab.com:45669/nightlife`);
