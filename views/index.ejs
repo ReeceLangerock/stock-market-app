@@ -20,7 +20,7 @@
     <div class='container'>
 
         <div class='chartContainer'>
-            <canvas id="stock-chart" width="1000px" height="500px"></canvas>
+            <canvas id="stock-chart"></canvas>
         </div>
 
         <div class='stockItemContainer' id='stockContainer'>
@@ -36,7 +36,7 @@
                 <% } %>
                 <!--div to add a stock -->
                     <div class="stockItem addStockItem">
-                        <span class = 'addSpan'>Syncs in real-time across clients</span><br>
+                        <span class = 'addSpan'><b>Syncs in real-time across clients<b></span><br>
                         <span class = 'inputSpan'><input type='text' value='Stock Code' id='addStock' onFocus="clearInput()">
                         <button onclick="addStockToChart()">Add</button>
                         <p id = 'stockResponseDisplay'></p>
@@ -45,9 +45,9 @@
     </div>
     <!--FOOTER -->
     <footer>
-        <p>Stock Viewer App built by <a href="https://www.freecodecamp.com/reecelangerock" target='_blank'><b>Reece Langerock</b></a></p>
-        <p>This is a FCC Project fulfilling the user stories listed <a href="https://www.freecodecamp.com/challenges/chart-the-stock-market" target='_blank'><b>here</b></a></p>
-        <p>Check out the Github Repo <a href="https://github.com/ReeceLangerock/stock-market-app" target='_blank'><b>here</b></a></p>
+        <p>Stock Viewer App built by <a href="https://www.freecodecamp.com/reecelangerock" target='_blank'>Reece Langerock</a></p>
+        <p>This is a FCC Project fulfilling the user stories listed <a href="https://www.freecodecamp.com/challenges/chart-the-stock-market" target='_blank'>here</a></p>
+        <p>Check out the Github Repo <a href="https://github.com/ReeceLangerock/stock-market-app" target='_blank'>here</a></p>
     </footer>
     <script>
         function clearInput() {

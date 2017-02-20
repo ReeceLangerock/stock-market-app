@@ -2,29 +2,28 @@
 article,aside,details,figcaption,figure,footer,header,hgroup,nav,section,summary{display:block;}audio,canvas,video{display:inline-block;}audio:not([controls]){display:none;height:0;}[hidden]{display:none;}html{font-family:sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}a:focus{outline:thin dotted;}a:active,a:hover{outline:0;}h1{font-size:2em;}abbr[title]{border-bottom:1px dotted;}b,strong{font-weight:700;}dfn{font-style:italic;}mark{background:#ff0;color:#000;}code,kbd,pre,samp{font-family:monospace, serif;font-size:1em;}pre{white-space:pre-wrap;word-wrap:break-word;}q{quotes:\201C \201D \2018 \2019;}small{font-size:80%;}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline;}sup{top:-.5em;}sub{bottom:-.25em;}img{border:0;}svg:not(:root){overflow:hidden;}fieldset{border:1px solid silver;margin:0 2px;padding:.35em .625em .75em;}button,input,select,textarea{font-family:inherit;font-size:100%;margin:0;}button,input{line-height:normal;}button,html input[type=button],/* 1 */
 input[type=reset],input[type=submit]{-webkit-appearance:button;cursor:pointer;}button[disabled],input[disabled]{cursor:default;}input[type=checkbox],input[type=radio]{box-sizing:border-box;padding:0;}input[type=search]{-webkit-appearance:textfield;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box;}input[type=search]::-webkit-search-cancel-button,input[type=search]::-webkit-search-decoration{-webkit-appearance:none;}textarea{overflow:auto;vertical-align:top;}table{border-collapse:collapse;border-spacing:0;}body,figure{margin:0;}legend,button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0;}
 
-.stockItemContainer {
-    display: flex;
-    width: 85%;
-    margin: auto;
-    flex-wrap: wrap;
-    background-color: #d9d1c7;
-    padding: 10px;
-    border-top: 1px solid #2f3540;
+body {
+    background-color: #2f3540;
 }
 
-canvas {
-    width: 100% !important;
-    min-width: 100%;
-    max-height: 600px;
-
-}
-
+/*CONTAINER FOR MAIN PAGE CONTENT */
 .container {
-    margin-top: 50px;
-    margin-bottom: 50px;
+    margin-top: 30px;
+    margin-bottom: 40px;
     min-height: 100vh;
 }
 
+/*CONTAINER FOR STOCK ITEMS */
+.stockItemContainer {
+    display: flex;
+    width: 80%;
+    margin: auto;
+    flex-wrap: wrap;
+    background-color: #d9d1c7;
+    border-top: 1px solid #2f3540;
+}
+
+/*STYLING FOR STOCK ITEMS */
 .stockItem {
     border-width: 1px 1px 1px 5px;
     border-style: solid;
@@ -35,8 +34,9 @@ canvas {
     background-color: #f2ede4;
     border-radius: 5px;
     padding: 5px;
-    min-height: 115px;
+    min-height: 100px;
 }
+
 .stockItem p{
   color: #8c8681
 }
@@ -45,10 +45,12 @@ canvas {
     border-color: #666a73;
 }
 
+/*KEEP DIV TO ADD STOCK AT THE END */
 .addStockItem {
     order: 10;
 }
 
+/*STYLING FOR ITEMS WITHIN EACH STOCK DIV */
 .stockSpan {
     font-size: 30px;
     display: flex;
@@ -63,7 +65,7 @@ canvas {
 }
 
 .addSpan {
-    font-size: 20px;
+    font-size: 16px;
     margin-bottom: 5px;
 }
 
@@ -71,43 +73,46 @@ canvas {
     margin: 0px;
 }
 
-.chartContainer {
-    padding: 10px;
-    width: 85%;
-    margin: auto;
-    background-color: #d9d1c7;
-    overflow-x: scroll;
+/*CHART DISPLAY */
+canvas {
+    width: 100% !important;
+    min-width: 100%;
+    height: 100% !important;
 }
 
-body {
-    background-color: #2f3540;
+/*STYLING FOR CHART DISPLAY */
+.chartContainer {
+    width: 80%;
+    margin: auto;
+    background-color: #d9d1c7;
+    overflow-x: auto;
 }
 
 /*FOOTER STYLING */
-
 footer {
     position: relative;
     right: 0;
     bottom: 0;
     left: 0;
     width: 100%;
-    color: white;
-    background-color: #334d5c;
-    align-items: center;
+    color: #f2ede4;
+    background-color: #666a73;
+    font-size: 14px;
 }
 
 footer p {
-    padding: 0px;
-    margin: 0px;
+    padding: 1px;
+    margin: 1px;
 }
 
 footer a {
     padding: 0px;
     text-decoration: none;
-    color: #45b29d;
+    color: #2f3540;
     margin: 0px;
 }
 
+/*RESPONSIVENESS */
 @media screen and (max-width:420px) {
     .chartContainer {
         width: 100vw;

@@ -5,7 +5,7 @@ var returnRouter = function(io) {
     // setup router
     var request = require('request');
     var bodyParser = require('body-parser');
-    //var config = require('../config');
+    var config = require('../config');
     var stockModel = require('../models/stocks.js')
 
     router.use(bodyParser.urlencoded({
@@ -142,7 +142,7 @@ var returnRouter = function(io) {
 
     // query quandl db for a stock code
     function getStock(stockCode, startDate, endDate) {
-        var apiKey = process.env.QUANDL_API_KEY;// || config.getQuandlAPIKey();
+        var apiKey = process.env.QUANDL_API_KEY || config.getQuandlAPIKey();
         var requestURL = `https://www.quandl.com/api/v3/datasets/WIKI/${stockCode}.json?column_index=4&start_date=${startDate}&end_date=${endDate}&collapse=daily&api_key=${apiKey}`
         return new Promise(function(resolve, reject) {
             request(requestURL, function(err, res, body) {
