@@ -71,7 +71,7 @@ var returnRouter = function(io) {
                         fill: false,
                         borderColor: generateRandomColor(),
                         pointRadius: 0,
-                        pointHitRadius: 50,
+                        pointHitRadius: 30,
                         label: response[stockNum].dataset.dataset_code,
                         data: tempData
                     });

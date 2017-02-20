@@ -77,7 +77,7 @@ function redrawChart(response) {
     stockChart.data.datasets.push({
         fill: false,
         pointRadius: 0,
-        pointHitRadius: 50,
+        pointHitRadius: 30,
         borderColor: generateRandomColor(),
         label: response.dataset.dataset_code,
         data: prices
