@@ -38,8 +38,8 @@
                     <div class="stockItem addStockItem">
                         <span class = 'addSpan'>Syncs in real-time across clients</span><br>
                         <span class = 'inputSpan'><input type='text' value='Stock Code' id='addStock' onFocus="clearInput()">
-                        <button onclick="updateChart()">Add</button>
-                        <p id = 'duplicateDisplay'></p>
+                        <button onclick="addStockToChart()">Add</button>
+                        <p id = 'stockResponseDisplay'></p>
                     </div>
         </div>
     </div>
@@ -78,11 +78,7 @@
             removeFromChart(stockData);
             $(`#${stockData}Div`).remove();
         });
-                
+
     </script>
-
-
-
 </body>
-
 </html>

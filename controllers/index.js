@@ -21,6 +21,7 @@ var returnRouter = function(io) {
         });
     });
 
+
     router.get('/', function(req, res) {
 
         var promiseArray = [];
@@ -139,6 +140,29 @@ var returnRouter = function(io) {
         });
     })
 
+    // query quandl db for a stock code
+    function getStock(stockCode, startDate, endDate) {
+        var apiKey = process.env.QUANDL_API_KEY;// || config.getQuandlAPIKey();
+        var requestURL = `https://www.quandl.com/api/v3/datasets/WIKI/${stockCode}.json?column_index=4&start_date=${startDate}&end_date=${endDate}&collapse=daily&api_key=${apiKey}`
+        return new Promise(function(resolve, reject) {
+            request(requestURL, function(err, res, body) {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                } else if (!err && res.statusCode == 200) {
+                    var info = JSON.parse(body)
+                    resolve(info);
+                } else if (res.statusCode == 404) {
+                    resolve('404');
+                } else if (res.statusCode == 400) {
+                    resolve('400');
+                }
+            })
+        });
+    }
+
+    // MONGOOSE QUERRIES
+    // get all stocks saved in db
     function queryAllSavedStocks() {
         return new Promise(function(resolve, reject) {
             stockModel.find(
@@ -150,16 +174,6 @@ var returnRouter = function(io) {
                     }
                 })
         });
-    }
-
-    // generate reandom hex code for stock dataset lines
-    function generateRandomColor() {
-        var letters = '0123456789ABCDEF';
-        var hex = '#';
-        for (var i = 0; i < 6; i++) {
-            hex += letters[Math.floor(Math.random() * 16)];
-        }
-        return hex;
     }
 
     // search mongodb for a stock code
@@ -179,28 +193,6 @@ var returnRouter = function(io) {
                         resolve('NOT_FOUND');
                     }
                 });
-        });
-
-    }
-
-    // query quandl db for a stock code
-    function getStock(stockCode, startDate, endDate) {
-        var apiKey = process.env.QUANDL_API_KEY;// || config.getQuandlAPIKey();
-        var requestURL = `https://www.quandl.com/api/v3/datasets/WIKI/${stockCode}.json?column_index=4&start_date=${startDate}&end_date=${endDate}&collapse=daily&api_key=${apiKey}`
-        return new Promise(function(resolve, reject) {
-            request(requestURL, function(err, res, body) {                
-                if (err) {
-                    console.log(err);
-                    reject(err);
-                } else if (!err && res.statusCode == 200) {
-                    var info = JSON.parse(body)
-                    resolve(info);
-                } else if (res.statusCode == 404) {
-                    resolve('404');
-                } else if (res.statusCode == 400) {
-                    resolve('400');
-                }
-            })
         });
     }
 
@@ -222,6 +214,17 @@ var returnRouter = function(io) {
                 });
         });
     }
+
+    // generate reandom hex code for stock dataset lines
+    function generateRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var hex = '#';
+        for (var i = 0; i < 6; i++) {
+            hex += letters[Math.floor(Math.random() * 16)];
+        }
+        return hex;
+    }
+
     return router;
 }
 
