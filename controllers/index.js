@@ -104,7 +104,7 @@ var returnRouter = function(io) {
                 var endDate = (date.getFullYear()) + '-' + (date.getMonth() + 1) + '-' + date.getDate();
                 getStock(req.body.stockCode, startDate, endDate).then(function(response, error) {
                     if (response == '404') {
-                        res.send('wrong stock');                        
+                        res.send('wrong stock');
                         res.end();
                     } else {
                         stockModel.schema.methods.newStock(response.dataset.id, response.dataset.dataset_code);
@@ -179,7 +179,7 @@ var returnRouter = function(io) {
     }
 
     function getStock(stockCode, startDate, endDate) {
-        var apiKey = config.getQuandlAPIKey();
+        var apiKey = process.env.QUANDL_API_KEY || config.getQuandlAPIKey();
         var requestURL = `https://www.quandl.com/api/v3/datasets/WIKI/${stockCode}.json?column_index=4&start_date=${startDate}&end_date=${endDate}&collapse=daily&api_key=${apiKey}`
         return new Promise(function(resolve, reject) {
             request(requestURL, function(err, res, body) {
