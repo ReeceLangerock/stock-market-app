@@ -3,12 +3,12 @@ var express = require('express');
 var app = express();
 var path = require('path');
 var port = process.env.PORT || 3000;
-var config = require('./config');
+//var config = require('./config');
 var mongoose = require('mongoose');
 
 //MONGOOSE CONFIG
-var userName = process.env.MONGO_USERNAME || config.getMongoUser();
-var password = process.env.MONGO_USERNAME || config.getMongoPass();
+var userName = process.env.MONGO_USERNAME;// || config.getMongoUser();
+var password = process.env.MONGO_USERNAME;// || config.getMongoPass();
 //mongoose.connect('mongodb://'+config.getMongoUser()+':'+config.getMongoPass()+'@ds153669.mlab.com:53669/stocks-srl');
 //below mongoose.connect saved for when moving to heroku
 mongoose.connect(`mongodb://${userName}:${password}@ds145669.mlab.com:45669/nightlife`);
