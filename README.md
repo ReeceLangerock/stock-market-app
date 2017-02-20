@@ -1,12 +1,13 @@
 ## Stock Market Viewer App
 
 ### App Build Using
--Node/express
--EJS / CSS
--Socket.IO
--MongoDB / Mongoose
--Quandl (Stock API)
--Momentjs (Chart time scale)
+- Node/express
+- EJS / CSS
+- Socket.IO
+- MongoDB / Mongoose
+- Quandl (Stock API)
+- Chartjs
+- Momentjs (Chart time scale)
 
 ### App Objective
 Build a full stack JavaScript app that is functionally similar to this: http://watchstocks.herokuapp.com/ and deploy it to Heroku. More details can be found here: https://www.freecodecamp.com/challenges/chart-the-stock-market
