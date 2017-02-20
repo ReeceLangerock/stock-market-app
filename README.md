@@ -1,6 +1,6 @@
 ## Stock Market Viewer App
 
-### App Build Using
+### App Built Using
 - Node/express
 - EJS / CSS
 - Socket.IO
