@@ -3,12 +3,12 @@ var express = require('express');
 var app = express();
 var path = require('path');
 var port = process.env.PORT || 3000;
-var config = require('./config');
+//var config = require('./config');
 var mongoose = require('mongoose');
 
 //MONGOOSE CONFIG
-var userName = process.env.MONGO_USERNAME || config.getMongoUser();
-var password = process.env.MONGO_PASSWORD || config.getMongoPass();
+var userName = process.env.MONGO_USERNAME;// || config.getMongoUser();
+var password = process.env.MONGO_PASSWORD;// || config.getMongoPass();
 mongoose.connect(`mongodb://${userName}:${password}@ds145669.mlab.com:45669/nightlife`);
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection eror:'));
