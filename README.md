@@ -6,6 +6,7 @@
 -Socket.IO
 -MongoDB / Mongoose
 -Quandl (Stock API)
+-Chartjs
 -Momentjs (Chart time scale)
 
 ### App Objective
