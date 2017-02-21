@@ -1,7 +1,7 @@
 ## Stock Market Viewer App
 
 ### App Built Using
->>>>>>> d257329de175a2fa31a873981d1fa11b30014c23
+
 - Node/express
 - EJS / CSS
 - Socket.IO
